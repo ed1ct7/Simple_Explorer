@@ -1,15 +1,7 @@
-﻿using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using FileManager.Models;
 using FileManager.ViewModels;
-using FileManager.Commands;
 
 namespace FileManager.Views
 {
@@ -18,6 +10,25 @@ namespace FileManager.Views
         public MainWindow()
         {
             InitializeComponent();
+        }
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (DataContext is MainViewModel viewModel && e.NewValue is FileSystemObjectModel selectedItem)
+            {
+                viewModel.SelectedObject = selectedItem;
+            }
+        }
+        private void TreeViewItem_Expanded(object sender, RoutedEventArgs e)
+        {
+            var treeViewItem = e.OriginalSource as TreeViewItem;
+            if (treeViewItem?.DataContext is FileSystemObjectModel item)
+            {
+                var viewModel = DataContext as MainViewModel;
+                if (item.Children.Count == 0)
+                {
+                    viewModel?.LoadChildrenCommand.Execute(item);
+                }
+            }
         }
     }
 }

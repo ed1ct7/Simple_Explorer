@@ -71,32 +71,50 @@ namespace FileManager.ViewModels
             }
         }
 
-        private void LoadChildren(FileSystemObjectModel parameter)
+        private void LoadChildren(object parameter)
         {
-            if (System.IO.Directory.Exists(parameter.FullPath))
+            if (parameter is FileSystemObjectModel item &&
+                System.IO.Directory.Exists(item.FullPath))
             {
-                string[] dirs = System.IO.Directory.GetDirectories(parameter.FullPath);
-                foreach (string s in dirs)
+                try
                 {
-                    parameter.Children.Add(
-                    new Models.Directory
+                    // Load directories
+                    string[] dirs = System.IO.Directory.GetDirectories(item.FullPath);
+                    foreach (string dirPath in dirs)
                     {
-                        Name = s,
-                        FullPath = s
-                    });
+                        var dirInfo = new System.IO.DirectoryInfo(dirPath);
+                        item.Children.Add(new Models.Directory
+                        {
+                            Name = dirInfo.Name,
+                            FullPath = dirPath,
+                            CreateDate = dirInfo.CreationTime,
+                        });
+                    }
+
+                    // Load files
+                    string[] files = System.IO.Directory.GetFiles(item.FullPath);
+                    foreach (string filePath in files)
+                    {
+                        var fileInfo = new System.IO.FileInfo(filePath);
+                        item.Children.Add(new Models.File
+                        {
+                            Name = fileInfo.Name,
+                            FullPath = filePath,
+                            CreateDate = fileInfo.CreationTime,
+                            Size = fileInfo.Length
+                        });
+                    }
                 }
-                string[] files = System.IO.Directory.GetFiles(parameter.FullPath);
-                foreach (string s in files)
+                catch (UnauthorizedAccessException)
                 {
-                    parameter.Children.Add(
-                    new Models.File
-                    {
-                        Name = s,
-                        FullPath = s
-                    });
+                    // Handle access denied
+                    Console.WriteLine($"Access denied: {item.FullPath}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error loading children: {ex.Message}");
                 }
             }
-
         }
 
         private bool CanLoadChildren(object parameter)

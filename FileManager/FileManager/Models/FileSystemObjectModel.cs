@@ -18,6 +18,10 @@ namespace FileManager.Models
     }
     public abstract class FileSystemObjectModel
     {
+        public FileSystemObjectModel()
+        {
+            Children = new ObservableCollection<FileSystemObjectModel>();
+        }
         public override string ToString()
         {
             return Name;
@@ -47,13 +51,6 @@ namespace FileManager.Models
 			get { return _createDate; }
 			set { _createDate = value; }
 		}
-
-        private bool _isSelected;
-        public bool IsSelected
-        {
-            get { return _isSelected; }
-            set { _isSelected = value; }
-        }
     }
 	public class File : FileSystemObjectModel
 	{
@@ -69,12 +66,6 @@ namespace FileManager.Models
 	}
     public class Directory : FileSystemObjectModel
     {
-        private bool _isExpanded;
-        public bool IsExpanded
-        {
-            get { return _isExpanded; }
-            set { _isExpanded = value; }
-        }
         public override E_ObjectType ObjectType => E_ObjectType.Directory;
 
 		private int _itemAmount;
@@ -95,12 +86,6 @@ namespace FileManager.Models
     }
     public class Drive : FileSystemObjectModel
     {
-        private bool _isExpanded;
-        public bool IsExpanded
-        {
-            get { return _isExpanded; }
-            set { _isExpanded = value; }
-        }
         public override E_ObjectType ObjectType => E_ObjectType.Drive;
 
         private long _spaceLeft; // Size in bytes

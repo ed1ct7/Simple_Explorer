@@ -5,13 +5,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileManager.Views"
         xmlns:vm="clr-namespace:FileManager.ViewModels"
-        
+        xmlns:models="clr-namespace:FileManager.Models"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    
+
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
+
+    <Window.Resources>
+        <HierarchicalDataTemplate DataType="{x:Type models:File}" 
+                                  ItemsSource="{Binding Children}">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="file_icon.png" Width="16" Height="16" Margin="0,0,5,0"/>
+                <TextBlock Text="{Binding Name}"/>
+            </StackPanel>
+        </HierarchicalDataTemplate>
+
+        <HierarchicalDataTemplate DataType="{x:Type models:Directory}" 
+                                  ItemsSource="{Binding Children}">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="folder_icon.png" Width="16" Height="16" Margin="0,0,5,0"/>
+                <TextBlock Text="{Binding Name}"/>
+            </StackPanel>
+        </HierarchicalDataTemplate>
+
+        <HierarchicalDataTemplate DataType="{x:Type models:Drive}" 
+                                  ItemsSource="{Binding Children}">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="drive_icon.png" Width="16" Height="16" Margin="0,0,5,0"/>
+                <TextBlock Text="{Binding Name}"/>
+                <TextBlock Text="{Binding SpaceLeft, StringFormat=' ({0} free)'}" 
+                           Foreground="Gray" FontStyle="Italic"/>
+            </StackPanel>
+        </HierarchicalDataTemplate>
+    </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -19,10 +47,17 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <!-- Дерево папок -->
         <TreeView Grid.Column="0"
-                  ItemsSource="{Binding RootItems}">
-            
+                ItemsSource="{Binding RootItems}"
+                SelectedItemChanged="TreeView_SelectedItemChanged">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                    <EventSetter Event="Expanded" Handler="TreeViewItem_Expanded"/>
+                </Style>
+            </TreeView.ItemContainerStyle>
         </TreeView>
     </Grid>
 </Window>
+ 
