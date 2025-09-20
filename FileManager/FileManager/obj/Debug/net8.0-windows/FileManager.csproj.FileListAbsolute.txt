@@ -19,3 +19,6 @@ C:\Secret\Fork\FileManager\FileManager\FileManager\obj\Debug\net8.0-windows\View
 C:\Secret\Fork\FileManager\FileManager\FileManager\obj\Debug\net8.0-windows\Views\MainWindow.baml
 C:\Secret\Fork\FileManager\FileManager\FileManager\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
 C:\Secret\Fork\FileManager\FileManager\FileManager\obj\Debug\net8.0-windows\FileManager_MarkupCompile.lref
+C:\Secret\Fork\FileManager\FileManager\FileManager\obj\Debug\net8.0-windows\FileManager.csproj.AssemblyReference.cache
+C:\Secret\Fork\FileManager\FileManager\FileManager\bin\Debug\net8.0-windows\Microsoft.Xaml.Behaviors.dll
+C:\Secret\Fork\FileManager\FileManager\FileManager\obj\Debug\net8.0-windows\FileMana.0F99248D.Up2Date

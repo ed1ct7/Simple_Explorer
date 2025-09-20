@@ -16,6 +16,7 @@ namespace FileManager.Views
             if (DataContext is MainViewModel viewModel && e.NewValue is FileSystemObjectModel selectedItem)
             {
                 viewModel.SelectedObject = selectedItem;
+                viewModel.InfoUpdateCommand.Execute(null);
             }
         }
         private void TreeViewItem_Expanded(object sender, RoutedEventArgs e)

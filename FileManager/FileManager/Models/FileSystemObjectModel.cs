@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -86,6 +87,21 @@ namespace FileManager.Models
     }
     public class Drive : FileSystemObjectModel
     {
+		public Drive(String Letter)
+		{
+            DriveInfo[] drives = DriveInfo.GetDrives();
+            foreach (var d in drives)
+			{
+				if (d.Name[0].ToString() == Letter)
+				{
+					this.SpaceLeft = d.AvailableFreeSpace;
+					this.SpaceOverall = d.TotalSize;
+					this.FullPath = d.Name;
+					break;
+				}
+			}
+        }
+		public Drive() { }
         public override E_ObjectType ObjectType => E_ObjectType.Drive;
 
         private long _spaceLeft; // Size in bytes

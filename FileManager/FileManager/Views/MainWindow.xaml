@@ -58,6 +58,13 @@
                 </Style>
             </TreeView.ItemContainerStyle>
         </TreeView>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="{Binding SelectedDriveInfo}"></TextBlock>
+            <TextBlock Grid.Row="1" Text="{Binding SelectedDirectoryInfo}"></TextBlock>
+        </Grid>
     </Grid>
 </Window>
- 

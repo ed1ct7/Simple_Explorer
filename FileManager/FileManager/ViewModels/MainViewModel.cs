@@ -30,9 +30,28 @@ namespace FileManager.ViewModels
                 OnPropertyChanged(); }
         }
 
+        private String _driveInfo;
+
+        public String SelectedDriveInfo
+        {
+            get { return _driveInfo; }
+            set { _driveInfo = value; OnPropertyChanged(); }
+        }
+
+        private String _directiryInfo;
+
+        public String SelectedDirectoryInfo
+        {
+            get { return _directiryInfo; }
+            set { _directiryInfo = value; OnPropertyChanged(); }
+        }
+
+
+
         public ICommand LoadDrivesCommand { get; }
         public ICommand LoadChildrenCommand { get; }
         public ICommand OpenFileCommand { get; }
+        public ICommand InfoUpdateCommand {  get; }
 
         public MainViewModel()
         {
@@ -40,11 +59,42 @@ namespace FileManager.ViewModels
             LoadDrivesCommand = new RelayCommand(LoadDrives);
             LoadChildrenCommand = new RelayCommand(LoadChildren, CanLoadChildren);
             OpenFileCommand = new RelayCommand(OpenFile, CanOpenFile);
-
-            // Загружаем диски при создании ViewModel
+            InfoUpdateCommand = new RelayCommand(InfoUpdate);
             LoadDrives(null);
         }
+        private String GetRootDirectory(String path) => path[0].ToString();
+        private void InfoUpdate(object parameter)
+        {
+            String RootDirectoryLetter = SelectedObject.FullPath[0].ToString();
+            Models.Drive RootDirectory = new Models.Drive(RootDirectoryLetter);
+            SelectedDriveInfo =
+                "Объем диска: " + RootDirectory.SpaceOverall + "\n" +
+                "Свободное пространство: " + RootDirectory.SpaceLeft + "\n" +
+                "Корневой каталог: " + RootDirectory.FullPath + "\n"
+                ;
 
+            if (SelectedObject is Models.Directory directory)
+            {
+                SelectedDirectoryInfo =
+                    "Директория: " + directory.Name + "\n" +
+                    "Время создания: " + Convert.ToDateTime(directory.CreateDate) + "\n" +
+                    "Корневой каталог: " + RootDirectory.FullPath + "\n"
+                    ;
+            }
+            else if (SelectedObject is Models.File file)
+            {
+                SelectedDirectoryInfo =
+                    "Имя файла: " + file.Name + "\n" 
+                    ;
+            }
+            else if (SelectedObject is Models.Drive drive)
+            {
+                SelectedDirectoryInfo =
+                    "Объем диска: " + drive.SpaceOverall + "\n" +
+                    "Свободное пространство: " + drive.SpaceLeft + "\n"
+                    ;
+            }
+        }
         private void LoadDrives(object parameter)
         {
             try
@@ -117,23 +167,16 @@ namespace FileManager.ViewModels
             }
         }
 
-        private bool CanLoadChildren(object parameter)
-        {
+        private bool CanLoadChildren(object parameter) =>
             // Можно загружать дочерние элементы только если выбран объект
-            return SelectedObject != null;
-        }
+            SelectedObject != null;
 
-        private void OpenFile(object parameter)
-        {
+        private void OpenFile(object parameter) =>
             // Заглушка для реализации открытия файла
             Console.WriteLine("OpenFile command executed");
-        }
 
-        private bool CanOpenFile(object parameter)
-        {
-            // Можно открывать только файлы
-            return SelectedObject is System.IO.File;
-        }
+        private bool CanOpenFile(object parameter) =>
+            SelectedObject is System.IO.File;
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
