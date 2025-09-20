@@ -23,17 +23,14 @@ namespace FileManager.Models
         {
             Children = new ObservableCollection<FileSystemObjectModel>();
         }
-        public override string ToString()
-        {
-            return Name;
-        }
+		public override string ToString() => Name;
         public ObservableCollection<FileSystemObjectModel> Children { get; set; } 
 		public abstract E_ObjectType ObjectType { get; }
 
 		private string _name;
 		public string Name
 		{
-			get { return _name; }
+			get => _name;
 			set { _name = value; }
 		}
 
@@ -41,7 +38,7 @@ namespace FileManager.Models
 
 		public string FullPath
 		{
-			get { return _fullpath; }
+			get => _fullpath;
 			set { _fullpath = value; }
 		}
 
@@ -49,7 +46,7 @@ namespace FileManager.Models
 
 		public DateTime CreateDate
         {
-			get { return _createDate; }
+			get => _createDate;
 			set { _createDate = value; }
 		}
     }
@@ -61,7 +58,7 @@ namespace FileManager.Models
 
 		public long Size
 		{
-			get { return _size; }
+			get => _size;
 			set { _size = value; }
 		}
 	}
@@ -73,7 +70,7 @@ namespace FileManager.Models
 
 		public int ItemAmount
 		{
-			get { return _itemAmount; }
+			get => _itemAmount;
 			set { _itemAmount = value; }
 		}
 
@@ -81,7 +78,7 @@ namespace FileManager.Models
 
         public long Size
         {
-            get { return _size; }
+            get => _size;
             set { _size = value; }
         }
     }
@@ -108,7 +105,7 @@ namespace FileManager.Models
 
         public long SpaceLeft
         {
-            get { return _spaceLeft; }
+            get => _spaceLeft;
             set { _spaceLeft = value; }
         }
 
@@ -116,7 +113,7 @@ namespace FileManager.Models
 
 		public long SpaceOverall
 		{
-			get { return _spaceOverall; }
+			get => _spaceOverall;
 			set { _spaceOverall = value; }
 		}
 

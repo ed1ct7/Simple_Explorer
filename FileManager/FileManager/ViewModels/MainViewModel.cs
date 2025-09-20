@@ -31,22 +31,18 @@ namespace FileManager.ViewModels
         }
 
         private String _driveInfo;
-
         public String SelectedDriveInfo
         {
-            get { return _driveInfo; }
+            get => _driveInfo;
             set { _driveInfo = value; OnPropertyChanged(); }
         }
 
         private String _directiryInfo;
-
         public String SelectedDirectoryInfo
         {
-            get { return _directiryInfo; }
+            get => _directiryInfo;
             set { _directiryInfo = value; OnPropertyChanged(); }
         }
-
-
 
         public ICommand LoadDrivesCommand { get; }
         public ICommand LoadChildrenCommand { get; }
@@ -57,8 +53,8 @@ namespace FileManager.ViewModels
         {
             RootItems = new ObservableCollection<Drive>();
             LoadDrivesCommand = new RelayCommand(LoadDrives);
-            LoadChildrenCommand = new RelayCommand(LoadChildren, CanLoadChildren);
-            OpenFileCommand = new RelayCommand(OpenFile, CanOpenFile);
+            LoadChildrenCommand = new RelayCommand(LoadChildren);
+            OpenFileCommand = new RelayCommand(OpenFile);
             InfoUpdateCommand = new RelayCommand(InfoUpdate);
             LoadDrives(null);
         }
@@ -68,15 +64,15 @@ namespace FileManager.ViewModels
             String RootDirectoryLetter = SelectedObject.FullPath[0].ToString();
             Models.Drive RootDirectory = new Models.Drive(RootDirectoryLetter);
             SelectedDriveInfo =
-                "Объем диска: " + RootDirectory.SpaceOverall + "\n" +
-                "Свободное пространство: " + RootDirectory.SpaceLeft + "\n" +
+                "Объем диска: " + RootDirectory.SpaceOverall / 8 + "Мб \n" +
+                "Свободное пространство: " + RootDirectory.SpaceLeft / 8 + "Мб \n" +
                 "Корневой каталог: " + RootDirectory.FullPath + "\n"
                 ;
 
             if (SelectedObject is Models.Directory directory)
             {
                 SelectedDirectoryInfo =
-                    "Директория: " + directory.Name + "\n" +
+                    "Директория: " + directory.FullPath + "\n" +
                     "Время создания: " + Convert.ToDateTime(directory.CreateDate) + "\n" +
                     "Корневой каталог: " + RootDirectory.FullPath + "\n"
                     ;
@@ -84,14 +80,14 @@ namespace FileManager.ViewModels
             else if (SelectedObject is Models.File file)
             {
                 SelectedDirectoryInfo =
-                    "Имя файла: " + file.Name + "\n" 
+                    "Имя файла: " + file.FullPath + "\n" 
                     ;
             }
             else if (SelectedObject is Models.Drive drive)
             {
                 SelectedDirectoryInfo =
-                    "Объем диска: " + drive.SpaceOverall + "\n" +
-                    "Свободное пространство: " + drive.SpaceLeft + "\n"
+                    "Объем диска: " + drive.SpaceOverall / 8 + "Мб \n" +
+                    "Свободное пространство: " + drive.SpaceLeft / 8 + "Мб \n"
                     ;
             }
         }
@@ -157,7 +153,6 @@ namespace FileManager.ViewModels
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    // Handle access denied
                     Console.WriteLine($"Access denied: {item.FullPath}");
                 }
                 catch (Exception ex)
@@ -167,16 +162,9 @@ namespace FileManager.ViewModels
             }
         }
 
-        private bool CanLoadChildren(object parameter) =>
-            // Можно загружать дочерние элементы только если выбран объект
-            SelectedObject != null;
-
         private void OpenFile(object parameter) =>
             // Заглушка для реализации открытия файла
             Console.WriteLine("OpenFile command executed");
-
-        private bool CanOpenFile(object parameter) =>
-            SelectedObject is System.IO.File;
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
