@@ -31,7 +31,6 @@ namespace FileManager.Views
                 }
             }
         }
-
         private void TreeViewItem_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if(DataContext is MainViewModel viewModel)

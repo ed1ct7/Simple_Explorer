@@ -1,19 +1,64 @@
-﻿using FileManager.Models;
+﻿using FileManager.Commands;
+using FileManager.Models;
 using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using FileManager.Commands;
+using System.Timers;
 using System.Windows;
-using System.Diagnostics;
+using System.Windows.Input;
 
 namespace FileManager.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+
+        private Hashtable openFiles_openFileTime = new Hashtable();
+
+        private static System.Timers.Timer aTimer;
+
+        public MainViewModel()
+        {
+            RootItems = new ObservableCollection<Drive>();
+            LoadDrivesCommand = new RelayCommand(LoadDrives);
+            LoadChildrenCommand = new RelayCommand(LoadChildren);
+            OpenFileCommand = new RelayCommand(OpenFile);
+            SelectItemCommand = new RelayCommand(SelectItem);
+            MouseDoubleClickCommand = new RelayCommand(MouseDoubleClick);
+            LoadDrives(null);
+
+            SetTimer();
+        }
+        private void SetTimer()
+        {
+            // Create a timer with a two second interval.
+            aTimer = new System.Timers.Timer(2000);
+            // Hook up the Elapsed event for the timer. 
+            aTimer.Elapsed += OnTimedEvent;
+            aTimer.AutoReset = true;
+            aTimer.Enabled = true;
+        }
+
+        private void OnTimedEvent(Object source, ElapsedEventArgs e)
+        {
+            Console.WriteLine("The Elapsed event was raised at {0:HH:mm:ss.fff}",
+                              e.SignalTime);
+            // Теперь этот метод может обращаться к нестатическому полю
+            foreach (DictionaryEntry entry in openFiles_openFileTime)
+            {
+                if (entry.Value is DateTime value) {
+                    if (value.Second > DateTime.Now.Second - 10)
+                    {
+                        openFiles_openFileTime.Remove(entry.Key);
+                    }
+                } 
+            }
+        }
+
         private ObservableCollection<Drive> _rootItems;
         private FileSystemObjectModel _selectedObject;
 
@@ -45,30 +90,11 @@ namespace FileManager.ViewModels
             set { _directiryInfo = value; OnPropertyChanged(); }
         }
 
-        private int myVar;
-
-        public int MyProperty
-        {
-            get { return myVar; }
-            set { myVar = value; }
-        }
-
-
         public ICommand LoadDrivesCommand { get; }
         public ICommand LoadChildrenCommand { get; }
         public ICommand OpenFileCommand { get; }
         public ICommand SelectItemCommand { get; }
         public ICommand MouseDoubleClickCommand { get; }
-        public MainViewModel()
-        {
-            RootItems = new ObservableCollection<Drive>();
-            LoadDrivesCommand = new RelayCommand(LoadDrives);
-            LoadChildrenCommand = new RelayCommand(LoadChildren);
-            OpenFileCommand = new RelayCommand(OpenFile);
-            SelectItemCommand = new RelayCommand(SelectItem);
-            MouseDoubleClickCommand = new RelayCommand(MouseDoubleClick);
-            LoadDrives(null);
-        }
         private void InfoUpdate(object parameter)
         {
             String RootDirectoryLetter = SelectedObject.FullPath[0].ToString();
@@ -108,6 +134,7 @@ namespace FileManager.ViewModels
                     ProcessStartInfo startInfo = new ProcessStartInfo(file.FullPath);
                     startInfo.UseShellExecute = true;
                     System.Diagnostics.Process.Start(startInfo);
+                    openFiles_openFileTime.Add(file.Name, DateTime.Now);
                 }       
                 catch { 
                 
