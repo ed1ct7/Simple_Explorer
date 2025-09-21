@@ -7,7 +7,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using FileManager.Commands;
-
+using System.Windows;
+using System.Diagnostics;
 
 namespace FileManager.ViewModels
 {
@@ -44,21 +45,30 @@ namespace FileManager.ViewModels
             set { _directiryInfo = value; OnPropertyChanged(); }
         }
 
+        private int myVar;
+
+        public int MyProperty
+        {
+            get { return myVar; }
+            set { myVar = value; }
+        }
+
+
         public ICommand LoadDrivesCommand { get; }
         public ICommand LoadChildrenCommand { get; }
         public ICommand OpenFileCommand { get; }
-        public ICommand InfoUpdateCommand {  get; }
-
+        public ICommand SelectItemCommand { get; }
+        public ICommand MouseDoubleClickCommand { get; }
         public MainViewModel()
         {
             RootItems = new ObservableCollection<Drive>();
             LoadDrivesCommand = new RelayCommand(LoadDrives);
             LoadChildrenCommand = new RelayCommand(LoadChildren);
             OpenFileCommand = new RelayCommand(OpenFile);
-            InfoUpdateCommand = new RelayCommand(InfoUpdate);
+            SelectItemCommand = new RelayCommand(SelectItem);
+            MouseDoubleClickCommand = new RelayCommand(MouseDoubleClick);
             LoadDrives(null);
         }
-        private String GetRootDirectory(String path) => path[0].ToString();
         private void InfoUpdate(object parameter)
         {
             String RootDirectoryLetter = SelectedObject.FullPath[0].ToString();
@@ -80,7 +90,7 @@ namespace FileManager.ViewModels
             else if (SelectedObject is Models.File file)
             {
                 SelectedDirectoryInfo =
-                    "Имя файла: " + file.FullPath + "\n" 
+                    "Имя файла: " + file.FullPath + "\n"
                     ;
             }
             else if (SelectedObject is Models.Drive drive)
@@ -91,6 +101,25 @@ namespace FileManager.ViewModels
                     ;
             }
         }
+        private void MouseDoubleClick(object parameter)
+        {
+            if (SelectedObject is Models.File file) {
+                try {
+                    ProcessStartInfo startInfo = new ProcessStartInfo(file.FullPath);
+                    startInfo.UseShellExecute = true;
+                    System.Diagnostics.Process.Start(startInfo);
+                }       
+                catch { 
+                
+                }
+            }
+        }
+        private void SelectItem(object parameter)
+        {
+            InfoUpdate(null);
+        }
+        private String GetRootDirectory(String path) => path[0].ToString();
+        
         private void LoadDrives(object parameter)
         {
             try

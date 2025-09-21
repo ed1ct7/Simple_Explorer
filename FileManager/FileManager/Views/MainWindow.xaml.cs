@@ -16,7 +16,7 @@ namespace FileManager.Views
             if (DataContext is MainViewModel viewModel && e.NewValue is FileSystemObjectModel selectedItem)
             {
                 viewModel.SelectedObject = selectedItem;
-                viewModel.InfoUpdateCommand.Execute(null);
+                viewModel.SelectItemCommand.Execute(null);
             }
         }
         private void TreeViewItem_Expanded(object sender, RoutedEventArgs e)
@@ -29,6 +29,14 @@ namespace FileManager.Views
                 {
                     viewModel?.LoadChildrenCommand.Execute(item);
                 }
+            }
+        }
+
+        private void TreeViewItem_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if(DataContext is MainViewModel viewModel)
+            {
+                viewModel.MouseDoubleClickCommand.Execute(null);
             }
         }
     }
