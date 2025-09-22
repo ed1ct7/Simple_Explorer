@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace FileManager.ViewModels
 {
@@ -21,6 +22,7 @@ namespace FileManager.ViewModels
 
         private static System.Timers.Timer aTimer;
 
+        string filePath = "test.txt";
         public MainViewModel()
         {
             RootItems = new ObservableCollection<Drive>();
@@ -42,20 +44,37 @@ namespace FileManager.ViewModels
             aTimer.AutoReset = true;
             aTimer.Enabled = true;
         }
-
         private void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
             Console.WriteLine("The Elapsed event was raised at {0:HH:mm:ss.fff}",
                               e.SignalTime);
             // Теперь этот метод может обращаться к нестатическому полю
+            var keysToRemove = new List<object>();
+
             foreach (DictionaryEntry entry in openFiles_openFileTime)
             {
-                if (entry.Value is DateTime value) {
-                    if (value.Second > DateTime.Now.Second - 10)
+                if (entry.Value is DateTime value)
+                {
+                    // Correct way to check if more than 10 seconds have passed
+                    if (DateTime.Now - value > TimeSpan.FromSeconds(10))
                     {
-                        openFiles_openFileTime.Remove(entry.Key);
+                        keysToRemove.Add(entry.Key);
                     }
-                } 
+                }
+            }
+
+            // Remove all collected keys
+            foreach (var key in keysToRemove)
+            {
+                openFiles_openFileTime.Remove(key);
+            }
+            
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                foreach (DictionaryEntry entry in openFiles_openFileTime)
+                {
+                    writer.WriteLine($"{entry.Key}={entry.Value}");
+                }
             }
         }
 
