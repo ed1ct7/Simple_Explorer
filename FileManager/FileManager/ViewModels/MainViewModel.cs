@@ -119,8 +119,8 @@ namespace FileManager.ViewModels
             String RootDirectoryLetter = SelectedObject.FullPath[0].ToString();
             Models.Drive RootDirectory = new Models.Drive(RootDirectoryLetter);
             SelectedDriveInfo =
-                "Объем диска: " + RootDirectory.SpaceOverall / 8 + "Мб \n" +
-                "Свободное пространство: " + RootDirectory.SpaceLeft / 8 + "Мб \n" +
+                "Объем диска: " + (RootDirectory.SpaceOverall / 1024) / 1024 / 1024 + " Гб \n" +
+                "Свободное пространство: " + (RootDirectory.SpaceLeft / 1024) / 1024 / 1024 + " Гб \n" +
                 "Корневой каталог: " + RootDirectory.FullPath + "\n"
                 ;
 
@@ -141,8 +141,8 @@ namespace FileManager.ViewModels
             else if (SelectedObject is Models.Drive drive)
             {
                 SelectedDirectoryInfo =
-                    "Объем диска: " + drive.SpaceOverall / 8 + "Мб \n" +
-                    "Свободное пространство: " + drive.SpaceLeft / 8 + "Мб \n"
+                    "Объем диска: " + (drive.SpaceOverall / 1024) / 1024 / 1024 + " Гб \n" +
+                    "Свободное пространство: " + (drive.SpaceLeft / 1024) / 1024 / 1024 + " Гб \n"
                     ;
             }
         }
