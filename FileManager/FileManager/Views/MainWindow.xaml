@@ -7,7 +7,8 @@
         xmlns:vm="clr-namespace:FileManager.ViewModels"
         xmlns:models="clr-namespace:FileManager.Models"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="900"
+        ResizeMode="NoResize">
 
     <Window.DataContext>
         <vm:MainViewModel/>
@@ -68,11 +69,29 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding SelectedDriveInfo}"></TextBlock>
-            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedDirectoryInfo}"></TextBlock>
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Height="auto" Text="Информация" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="0" 
+                       Text="{Binding SelectedDriveInfo}" 
+                       TextWrapping="Wrap"
+                       FontSize="13"
+                       Padding="10"
+                       />
+            <TextBlock Grid.Row="1" Grid.Column="1" 
+                       Text="{Binding SelectedDirectoryInfo}" 
+                       TextWrapping="Wrap"
+                       FontSize="13"
+                       Padding="10"
+                       />
+            <TextBlock Grid.Row="2" Grid.ColumnSpan="2" 
+                       Text="{Binding SelectedFilePreviewText}" 
+                       TextWrapping="Wrap"
+                       FontSize="13"
+                       Padding="10"
+                       />
         </Grid>
     </Grid>
 </Window>

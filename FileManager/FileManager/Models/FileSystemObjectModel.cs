@@ -35,7 +35,6 @@ namespace FileManager.Models
 		}
 
 		private string _fullpath;
-
 		public string FullPath
 		{
 			get => _fullpath;
@@ -43,7 +42,6 @@ namespace FileManager.Models
 		}
 
 		private DateTime _createDate;
-
 		public DateTime CreateDate
         {
 			get => _createDate;

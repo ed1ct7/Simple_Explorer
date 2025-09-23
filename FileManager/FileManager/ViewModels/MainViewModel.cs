@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
@@ -88,6 +89,18 @@ namespace FileManager.ViewModels
                 OnPropertyChanged(); }
         }
 
+
+        private String _selectedFilePreviewText;
+        public String SelectedFilePreviewText
+        {
+            get { return _selectedFilePreviewText; }
+            set
+            {
+                _selectedFilePreviewText = value;
+                OnPropertyChanged();
+            }
+        }
+
         public FileSystemObjectModel SelectedObject
         {
             get => _selectedObject;
@@ -149,6 +162,30 @@ namespace FileManager.ViewModels
                     ;
             }
         }
+        private void PreviewText(object parameter)
+        {
+            if (SelectedObject is Models.File file)
+            {
+                try
+                {
+                    if (Path.GetExtension(file.FullPath).ToLower() == ".txt")
+                    {
+                        SelectedFilePreviewText = System.IO.File.ReadAllText(file.FullPath);
+                    }
+                    else
+                    {
+                        byte[] bytes = System.IO.File.ReadAllBytes(file.FullPath);
+                        SelectedFilePreviewText = Encoding.UTF8.GetString(bytes.Take(500).ToArray());
+                    }
+                }
+                catch (Exception ex) {
+                    SelectedFilePreviewText = "Something isn't right";
+                }
+            }
+            else {
+                SelectedFilePreviewText = "Select File";
+            }
+        }
         private void MouseDoubleClick(object parameter)
         {
             if (SelectedObject is Models.File file) {
@@ -166,6 +203,7 @@ namespace FileManager.ViewModels
         private void SelectItem(object parameter)
         {
             InfoUpdate(null);
+            PreviewText(null);
         }
         private String GetRootDirectory(String path) => path[0].ToString();
         
