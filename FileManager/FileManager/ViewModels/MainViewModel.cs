@@ -119,14 +119,15 @@ namespace FileManager.ViewModels
             String RootDirectoryLetter = SelectedObject.FullPath[0].ToString();
             Models.Drive RootDirectory = new Models.Drive(RootDirectoryLetter);
             SelectedDriveInfo =
+                    "Информация о диске " + RootDirectory.FullPath + "\n" +
                 "Объем диска: " + (RootDirectory.SpaceOverall / 1024) / 1024 / 1024 + " Гб \n" +
-                "Свободное пространство: " + (RootDirectory.SpaceLeft / 1024) / 1024 / 1024 + " Гб \n" +
-                "Корневой каталог: " + RootDirectory.FullPath + "\n"
+                "Свободное пространство: " + (RootDirectory.SpaceLeft / 1024) / 1024 / 1024 + " Гб \n"
                 ;
 
             if (SelectedObject is Models.Directory directory)
             {
                 SelectedDirectoryInfo =
+                    "Информация о директории\n" +
                     "Директория: " + directory.FullPath + "\n" +
                     "Время создания: " + Convert.ToDateTime(directory.CreateDate) + "\n" +
                     "Корневой каталог: " + RootDirectory.FullPath + "\n"
@@ -135,12 +136,14 @@ namespace FileManager.ViewModels
             else if (SelectedObject is Models.File file)
             {
                 SelectedDirectoryInfo =
+                    "Информация о файле\n" +
                     "Имя файла: " + file.FullPath + "\n"
                     ;
             }
             else if (SelectedObject is Models.Drive drive)
             {
                 SelectedDirectoryInfo =
+                    "Информация о диске\n" +
                     "Объем диска: " + (drive.SpaceOverall / 1024) / 1024 / 1024 + " Гб \n" +
                     "Свободное пространство: " + (drive.SpaceLeft / 1024) / 1024 / 1024 + " Гб \n"
                     ;
