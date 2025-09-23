@@ -23,7 +23,7 @@ namespace FileManager.ViewModels
 
         private static System.Timers.Timer aTimer;
 
-        string filePath = "test.txt";
+        string filePath = "latelyOpenedPrograms.txt";
         public MainViewModel()
         {
             RootItems = new ObservableCollection<Drive>();
@@ -38,9 +38,7 @@ namespace FileManager.ViewModels
         }
         private void SetTimer()
         {
-            // Create a timer with a two second interval.
-            aTimer = new System.Timers.Timer(2000);
-            // Hook up the Elapsed event for the timer. 
+            aTimer = new System.Timers.Timer(1000);
             aTimer.Elapsed += OnTimedEvent;
             aTimer.AutoReset = true;
             aTimer.Enabled = true;
@@ -49,15 +47,13 @@ namespace FileManager.ViewModels
         {
             Console.WriteLine("The Elapsed event was raised at {0:HH:mm:ss.fff}",
                               e.SignalTime);
-            // Теперь этот метод может обращаться к нестатическому полю
             var keysToRemove = new List<object>();
 
             foreach (DictionaryEntry entry in openFiles_openFileTime)
             {
                 if (entry.Value is DateTime value)
                 {
-                    // Correct way to check if more than 10 seconds have passed
-                    if (DateTime.Now - value > TimeSpan.FromSeconds(10))
+                    if (DateTime.Now - value > TimeSpan.FromSeconds(10)) // should be 10 second
                     {
                         keysToRemove.Add(entry.Key);
                     }
@@ -133,8 +129,8 @@ namespace FileManager.ViewModels
             Models.Drive RootDirectory = new Models.Drive(RootDirectoryLetter);
             SelectedDriveInfo =
                     "Информация о диске " + RootDirectory.FullPath + "\n" +
-                "Объем диска: " + (RootDirectory.SpaceOverall / 1024) / 1024 / 1024 + " Гб \n" +
-                "Свободное пространство: " + (RootDirectory.SpaceLeft / 1024) / 1024 / 1024 + " Гб \n"
+                "Объем диска: " + RootDirectory.SpaceOverall / 1024 / 1024 / 1024 + " Гб \n" +
+                "Свободное пространство: " + RootDirectory.SpaceLeft / 1024 / 1024 / 1024 + " Гб \n"
                 ;
 
             if (SelectedObject is Models.Directory directory)
@@ -157,8 +153,8 @@ namespace FileManager.ViewModels
             {
                 SelectedDirectoryInfo =
                     "Информация о диске\n" +
-                    "Объем диска: " + (drive.SpaceOverall / 1024) / 1024 / 1024 + " Гб \n" +
-                    "Свободное пространство: " + (drive.SpaceLeft / 1024) / 1024 / 1024 + " Гб \n"
+                    "Объем диска: " + drive.SpaceOverall / 1024 / 1024 / 1024 + " Гб \n" +
+                    "Свободное пространство: " + drive.SpaceLeft / 1024 / 1024 / 1024 + " Гб \n"
                     ;
             }
         }
@@ -175,11 +171,12 @@ namespace FileManager.ViewModels
                     else
                     {
                         byte[] bytes = System.IO.File.ReadAllBytes(file.FullPath);
-                        SelectedFilePreviewText = Encoding.UTF8.GetString(bytes.Take(500).ToArray());
+                        var bytesFirst500 = bytes.Take(500);
+                        SelectedFilePreviewText = BitConverter.ToString(bytesFirst500.ToArray()).Replace("-"," ");
                     }
                 }
                 catch (Exception ex) {
-                    SelectedFilePreviewText = "Something isn't right";
+                    SelectedFilePreviewText = ($"Access denied: {file.FullPath}");
                 }
             }
             else {
